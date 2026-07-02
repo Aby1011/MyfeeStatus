@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %}Finance Dashboard - MyFeeStatus{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1 class="dashboard-title">
+        <i class="fas fa-chart-line"></i> Finance Dashboard
+    </h1>
+    <p class="dashboard-subtitle">Payment and revenue management</p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <i class="fas fa-dollar-sign stat-icon" style="color: #28a745;"></i>
+        <div class="stat-number">${{ revenue_today|floatformat:2 }}</div>
+        <div class="stat-label">Today's Revenue</div>
+    </div>
+    
+    <div class="stat-card">
+        <i class="fas fa-calendar-month stat-icon" style="color: #667eea;"></i>
+        <div class="stat-number">${{ monthly_revenue|floatformat:2 }}</div>
+        <div class="stat-label">Monthly Revenue</div>
+    </div>
+    
+    <div class="stat-card">
+        <i class="fas fa-clock stat-icon" style="color: #ffc107;"></i>
+        <div class="stat-number">{{ pending_fees_count }}</div>
+        <div class="stat-label">Pending Fees</div>
+    </div>
+    
+    <div class="stat-card">
+        <i class="fas fa-exclamation-triangle stat-icon" style="color: #dc3545;"></i>
+        <div class="stat-number">{{ overdue_fees_count }}</div>
+        <div class="stat-label">Overdue Fees</div>
+    </div>
+</div>
+
+<div class="d-flex gap-3 mb-4">
+    <a href="{% url 'fees:list' %}" class="btn btn-primary">
+        <i class="fas fa-money-bill"></i> All Fees
+    </a>
+    <a href="{% url 'payments:pending' %}" class="btn btn-warning">
+        <i class="fas fa-clock"></i> Pending Payments
+    </a>
+    <a href="{% url 'fees:overdue' %}" class="btn btn-danger">
+        <i class="fas fa-exclamation-triangle"></i> Overdue Fees
+    </a>
+    <a href="{% url 'fees:structure_list' %}" class="btn btn-secondary">
+        <i class="fas fa-cog"></i> Fee Structures
+    </a>
+</div>
+
+{% if payment_modes %}
+<div class="table-container">
+    <h3 style="padding: 1.5rem 1.5rem 0;">Payment Mode Distribution</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Payment Mode</th>
+                <th>Transactions</th>
+                <th>Total Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mode in payment_modes %}
+            <tr>
+                <td>{{ mode.payment_mode|title|safe }}</td>
+                <td>{{ mode.count }}</td>
+                <td>${{ mode.total|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+<div class="table-container">
+    <h3 style="padding: 1.5rem 1.5rem 0;">Recent Transactions</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Transaction ID</th>
+                <th>Student</th>
+                <th>Fee</th>
+                <th>Amount</th>
+                <th>Payment Mode</th>
+                <th>Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in recent_payments %}
+            <tr>
+                <td>{{ payment.transaction_id }}</td>
+                <td>{{ payment.student_fee.student.user.get_full_name }}</td>
+                <td>{{ payment.student_fee.fee_structure.name }}</td>
+                <td>${{ payment.amount }}</td>
+                <td>{{ payment.get_payment_mode_display }}</td>
+                <td>{{ payment.processed_at|date:"M d, Y H:i" }}</td>
+                <td><span class="status-badge status-{{ payment.status }}">{{ payment.get_status_display }}</span></td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center">No recent transactions</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

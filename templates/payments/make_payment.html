@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block title %}Make Payment - MyFeeStatus{% endblock %}
+
+{% block content %}
+<div class="payment-container">
+    <div class="dashboard-header text-center">
+        <h1 class="dashboard-title">
+            <i class="fas fa-credit-card"></i> Make Payment
+        </h1>
+        <p class="dashboard-subtitle">{{ student_fee.fee_structure.name }}</p>
+    </div>
+    
+    <div class="payment-summary">
+        <h3><i class="fas fa-info-circle"></i> Payment Details</h3>
+        <div class="d-flex justify-between mb-2">
+            <span>Student ID:</span>
+            <strong>{{ student_fee.student.student_id }}</strong>
+        </div>
+        <div class="d-flex justify-between mb-2">
+            <span>Student Name:</span>
+            <strong>{{ student_fee.student.user.get_full_name }}</strong>
+        </div>
+        <div class="d-flex justify-between mb-2">
+            <span>Fee Name:</span>
+            <strong>{{ student_fee.fee_structure.name }}</strong>
+        </div>
+        <div class="d-flex justify-between mb-2">
+            <span>Total Amount:</span>
+            <strong>${{ student_fee.total_amount }}</strong>
+        </div>
+        <div class="d-flex justify-between mb-2">
+            <span>Paid Amount:</span>
+            <strong>${{ student_fee.amount_paid }}</strong>
+        </div>
+        <div class="d-flex justify-between mb-2">
+            <span>Remaining Amount:</span>
+            <strong class="text-danger">${{ student_fee.remaining_amount }}</strong>
+        </div>
+        <div class="d-flex justify-between mb-2">
+            <span>Due Date:</span>
+            <strong>{{ student_fee.due_date|date:"M d, Y" }}</strong>
+        </div>
+        <div class="d-flex justify-between">
+            <span>Status:</span>
+            <span class="status-badge status-{{ student_fee.status }}">{{ student_fee.get_status_display }}</span>
+        </div>
+    </div>
+    
+    <form method="post" class="form">
+        {% csrf_token %}
+        
+        <h3><i class="fas fa-money-bill"></i> Payment Information</h3>
+        
+        <div class="form-group">
+            <label for="{{ payment_form.amount.id_for_label }}">Payment Amount:</label>
+            {{ payment_form.amount }}
+            {% if payment_form.amount.errors %}
+                <div class="form-error">{{ payment_form.amount.errors|first }}</div>
+            {% endif %}
+            <small class="text-muted">Maximum: ${{ student_fee.remaining_amount }}</small>
+        </div>
+        
+        <div class="form-group">
+            <label>Select Payment Mode:</label>
+            <div class="payment-modes">
+                <div class="payment-mode" data-mode="credit_card">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Credit Card</span>
+                </div>
+                <div class="payment-mode" data-mode="debit_card">
+                    <i class="fas fa-money-check"></i>
+                    <span>Debit Card</span>
+                </div>
+                <div class="payment-mode" data-mode="upi">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>UPI</span>
+                </div>
+                <div class="payment-mode" data-mode="cash">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span>Cash</span>
+                </div>
+                <div class="payment-mode" data-mode="bank_transfer">
+                    <i class="fas fa-university"></i>
+                    <span>Bank Transfer</span>
+                </div>
+            </div>
+            {{ payment_form.payment_mode }}
+            {% if payment_form.payment_mode.errors %}
+                <div class="form-error">{{ payment_form.payment_mode.errors|first }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-success btn-full">
+                <i class="fas fa-arrow-right"></i> Proceed to Payment
+            </button>
+            <a href="{% url 'fees:list' %}" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+<style>
+{{ payment_form.payment_mode.as_hidden }}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const paymentModes = document.querySelectorAll('.payment-mode');
+    const paymentModeInput = document.querySelector('input[name="payment_mode"]');
+    
+    paymentModes.forEach(mode => {
+        mode.addEventListener('click', function() {
+            paymentModes.forEach(m => m.classList.remove('selected'));
+            this.classList.add('selected');
+            paymentModeInput.value = this.dataset.mode;
+        });
+    });
+});
+</script>
+{% endblock %}

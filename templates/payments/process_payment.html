@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+
+{% block title %}Process Payment - MyFeeStatus{% endblock %}
+
+{% block content %}
+<div class="payment-container">
+    <div class="dashboard-header text-center">
+        <h1 class="dashboard-title">
+            <i class="fas fa-credit-card"></i> Process Payment
+        </h1>
+        <p class="dashboard-subtitle">{{ payment.get_payment_mode_display }} - ${{ payment.amount }}</p>
+    </div>
+    
+    <div class="payment-summary">
+        <h3><i class="fas fa-info-circle"></i> Payment Summary</h3>
+        <div class="d-flex justify-between mb-2">
+            <span>Transaction ID:</span>
+            <strong>{{ payment.transaction_id }}</strong>
+        </div>
+        <div class="d-flex justify-between mb-2">
+            <span>Student:</span>
+            <strong>{{ payment.student_fee.student.user.get_full_name }}</strong>
+        </div>
+        <div class="d-flex justify-between mb-2">
+            <span>Fee:</span>
+            <strong>{{ payment.student_fee.fee_structure.name }}</strong>
+        </div>
+        <div class="d-flex justify-between mb-2">
+            <span>Amount:</span>
+            <strong>${{ payment.amount }}</strong>
+        </div>
+        <div class="d-flex justify-between">
+            <span>Payment Mode:</span>
+            <strong>{{ payment.get_payment_mode_display }}</strong>
+        </div>
+    </div>
+    
+    {% if form %}
+    <form method="post" class="form">
+        {% csrf_token %}
+        
+        <h3>
+            <i class="fas fa-lock"></i> 
+            {% if payment.payment_mode == 'credit_card' %}Credit Card Details
+            {% elif payment.payment_mode == 'debit_card' %}Debit Card Details
+            {% elif payment.payment_mode == 'upi' %}UPI Details
+            {% elif payment.payment_mode == 'cash' %}Cash Payment Details
+            {% elif payment.payment_mode == 'bank_transfer' %}Bank Transfer Details
+            {% endif %}
+        </h3>
+        
+        {% if payment.payment_mode == 'credit_card' or payment.payment_mode == 'debit_card' %}
+            <div class="form-group">
+                <label for="{{ form.card_number.id_for_label }}">Card Number:</label>
+                {{ form.card_number }}
+                {% if form.card_number.errors %}
+                    <div class="form-error">{{ form.card_number.errors|first }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.card_holder_name.id_for_label }}">Card Holder Name:</label>
+                {{ form.card_holder_name }}
+                {% if form.card_holder_name.errors %}
+                    <div class="form-error">{{ form.card_holder_name.errors|first }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ form.expiry_month.id_for_label }}">Expiry Month:</label>
+                    {{ form.expiry_month }}
+                    {% if form.expiry_month.errors %}
+                        <div class="form-error">{{ form.expiry_month.errors|first }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.expiry_year.id_for_label }}">Expiry Year:</label>
+                    {{ form.expiry_year }}
+                    {% if form.expiry_year.errors %}
+                        <div class="form-error">{{ form.expiry_year.errors|first }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.cvv.id_for_label }}">CVV:</label>
+                {{ form.cvv }}
+                {% if form.cvv.errors %}
+                    <div class="form-error">{{ form.cvv.errors|first }}</div>
+                {% endif %}
+            </div>
+            
+            {% if payment.payment_mode == 'debit_card' %}
+            <div class="form-group">
+                <label for="{{ form.pin.id_for_label }}">PIN:</label>
+                {{ form.pin }}
+                {% if form.pin.errors %}
+                    <div class="form-error">{{ form.pin.errors|first }}</div>
+                {% endif %}
+            </div>
+            {% endif %}
+            
+        {% elif payment.payment_mode == 'upi' %}
+            <div class="form-group">
+                <label for="{{ form.upi_id.id_for_label }}">UPI ID:</label>
+                {{ form.upi_id }}
+                {% if form.upi_id.errors %}
+                    <div class="form-error">{{ form.upi_id.errors|first }}</div>
+                {% endif %}
+                <small class="text-muted">Enter your UPI ID (e.g., yourname@paytm)</small>
+            </div>
+            
+        {% elif payment.payment_mode == 'cash' %}
+            <div class="form-group">
+                <label for="{{ form.received_by.id_for_label }}">Received By (Staff Name):</label>
+                {{ form.received_by }}
+                {% if form.received_by.errors %}
+                    <div class="form-error">{{ form.received_by.errors|first }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.notes.id_for_label }}">Notes (Optional):</label>
+                {{ form.notes }}
+                {% if form.notes.errors %}
+                    <div class="form-error">{{ form.notes.errors|first }}</div>
+                {% endif %}
+            </div>
+            
+        {% elif payment.payment_mode == 'bank_transfer' %}
+            <div class="form-group">
+                <label for="{{ form.bank_name.id_for_label }}">Bank Name:</label>
+                {{ form.bank_name }}
+                {% if form.bank_name.errors %}
+                    <div class="form-error">{{ form.bank_name.errors|first }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.account_number.id_for_label }}">Account Number:</label>
+                {{ form.account_number }}
+                {% if form.account_number.errors %}
+                    <div class="form-error">{{ form.account_number.errors|first }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.ifsc_code.id_for_label }}">IFSC Code:</label>
+                {{ form.ifsc_code }}
+                {% if form.ifsc_code.errors %}
+                    <div class="form-error">{{ form.ifsc_code.errors|first }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.transaction_reference.id_for_label }}">Transaction Reference:</label>
+                {{ form.transaction_reference }}
+                {% if form.transaction_reference.errors %}
+                    <div class="form-error">{{ form.transaction_reference.errors|first }}</div>
+                {% endif %}
+            </div>
+        {% endif %}
+        
+        <div class="alert alert-info">
+            <i class="fas fa-shield-alt"></i>
+            Your payment information is secure and encrypted. We do not store sensitive payment details.
+        </div>
+        
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-success btn-full">
+                <i class="fas fa-check"></i> Process Payment
+            </button>
+            <a href="{% url 'payments:make_payment' fee_id=payment.student_fee.id %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+        </div>
+    </form>
+    {% else %}
+    <form method="post" class="form">
+        {% csrf_token %}
+        <div class="alert alert-success text-center">
+            <i class="fas fa-money-bill-wave fa-3x mb-3"></i>
+            <h4>Cash Payment</h4>
+            <p>Please proceed to the finance office to complete your cash payment.</p>
+        </div>
+        
+        <button type="submit" class="btn btn-success btn-full">
+            <i class="fas fa-check"></i> Confirm Cash Payment
+        </button>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

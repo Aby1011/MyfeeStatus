@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment History - MyFeeStatus{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1 class="dashboard-title">
+        <i class="fas fa-history"></i> Payment History
+    </h1>
+    <p class="dashboard-subtitle">
+        {% if user.is_student %}
+            Your payment transactions and receipts
+        {% else %}
+            All payment transactions in the system
+        {% endif %}
+    </p>
+</div>
+
+<div class="d-flex gap-3 mb-4">
+    <a href="{% url 'dashboard:home' %}" class="btn btn-primary">
+        <i class="fas fa-tachometer-alt"></i> Dashboard
+    </a>
+    <a href="{% url 'fees:list' %}" class="btn btn-secondary">
+        <i class="fas fa-money-bill"></i> View Fees
+    </a>
+    {% if not user.is_student %}
+        <a href="{% url 'payments:pending' %}" class="btn btn-warning">
+            <i class="fas fa-clock"></i> Pending Payments
+        </a>
+    {% endif %}
+</div>
+
+<div class="table-container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Transaction ID</th>
+                {% if not user.is_student %}
+                <th>Student</th>
+                {% endif %}
+                <th>Fee Name</th>
+                <th>Amount</th>
+                <th>Payment Mode</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in payments %}
+            <tr>
+                <td>{{ payment.transaction_id }}</td>
+                {% if not user.is_student %}
+                <td>{{ payment.student_fee.student.user.get_full_name }}</td>
+                {% endif %}
+                <td>{{ payment.student_fee.fee_structure.name }}</td>
+                <td>${{ payment.amount }}</td>
+                <td>{{ payment.get_payment_mode_display }}</td>
+                <td>{{ payment.created_at|date:"M d, Y H:i" }}</td>
+                <td><span class="status-badge status-{{ payment.status }}">{{ payment.get_status_display }}</span></td>
+                <td>
+                    {% if payment.status == 'completed' %}
+                        <a href="{% url 'payments:receipt' payment_id=payment.id %}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-receipt"></i> Receipt
+                        </a>
+                    {% else %}
+                        <span class="text-muted">-</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="{% if user.is_student %}7{% else %}8{% endif %}" class="text-center">
+                    No payment history found
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Fee Structures - MyFeeStatus{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1 class="dashboard-title">
+        <i class="fas fa-cog"></i> Fee Structures
+    </h1>
+    <p class="dashboard-subtitle">Manage fee types and amounts</p>
+</div>
+
+<div class="d-flex gap-3 mb-4">
+    <a href="{% url 'fees:structure_create' %}" class="btn btn-success">
+        <i class="fas fa-plus"></i> Create New Structure
+    </a>
+    <a href="{% url 'fees:list' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Back to Fees
+    </a>
+</div>
+
+<div class="table-container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Amount</th>
+                <th>Due Date</th>
+                <th>Late Fee</th>
+                <th>Active</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for structure in structures %}
+            <tr>
+                <td>{{ structure.name }}</td>
+                <td>{{ structure.description|truncatewords:10 }}</td>
+                <td>${{ structure.amount }}</td>
+                <td>{{ structure.due_date|date:"M d, Y" }}</td>
+                <td>${{ structure.late_fee_amount }}</td>
+                <td>
+                    {% if structure.is_active %}
+                        <span class="status-badge status-active">Active</span>
+                    {% else %}
+                        <span class="status-badge status-inactive">Inactive</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'fees:structure_edit' pk=structure.pk %}" class="btn btn-sm btn-primary">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <a href="{% url 'fees:structure_delete' pk=structure.pk %}" class="btn btn-sm btn-danger">
+                        <i class="fas fa-trash"></i> Delete
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center">No fee structures found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

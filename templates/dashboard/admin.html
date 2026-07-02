@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - MyFeeStatus{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1 class="dashboard-title">
+        <i class="fas fa-tachometer-alt"></i> Admin Dashboard
+    </h1>
+    <p class="dashboard-subtitle">System overview and management</p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <i class="fas fa-users stat-icon" style="color: #667eea;"></i>
+        <div class="stat-number">{{ total_users }}</div>
+        <div class="stat-label">Total Users</div>
+    </div>
+    
+    <div class="stat-card">
+        <i class="fas fa-user-graduate stat-icon" style="color: #28a745;"></i>
+        <div class="stat-number">{{ total_students }}</div>
+        <div class="stat-label">Students</div>
+    </div>
+    
+    <div class="stat-card">
+        <i class="fas fa-money-bill-wave stat-icon" style="color: #ffc107;"></i>
+        <div class="stat-number">${{ total_revenue|floatformat:2 }}</div>
+        <div class="stat-label">Total Revenue</div>
+    </div>
+    
+    <div class="stat-card">
+        <i class="fas fa-exclamation-triangle stat-icon" style="color: #dc3545;"></i>
+        <div class="stat-number">{{ overdue_fees }}</div>
+        <div class="stat-label">Overdue Fees</div>
+    </div>
+</div>
+
+<div class="d-flex gap-3 mb-4">
+    <a href="{% url 'fees:structure_list' %}" class="btn btn-primary">
+        <i class="fas fa-cog"></i> Manage Fee Structures
+    </a>
+    <a href="{% url 'fees:assign' %}" class="btn btn-success">
+        <i class="fas fa-plus"></i> Assign Fees
+    </a>
+    <a href="{% url 'fees:overdue' %}" class="btn btn-warning">
+        <i class="fas fa-clock"></i> Overdue Fees
+    </a>
+</div>
+
+<div class="table-container">
+    <h3 style="padding: 1.5rem 1.5rem 0;">Recent Payments</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Transaction ID</th>
+                <th>Student</th>
+                <th>Amount</th>
+                <th>Payment Mode</th>
+                <th>Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in recent_payments %}
+            <tr>
+                <td>{{ payment.transaction_id }}</td>
+                <td>{{ payment.student_fee.student.user.get_full_name }}</td>
+                <td>${{ payment.amount }}</td>
+                <td>{{ payment.get_payment_mode_display }}</td>
+                <td>{{ payment.processed_at|date:"M d, Y" }}</td>
+                <td><span class="status-badge status-{{ payment.status }}">{{ payment.get_status_display }}</span></td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">No recent payments</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="table-container">
+    <h3 style="padding: 1.5rem 1.5rem 0;">Recent Students</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Student ID</th>
+                <th>Name</th>
+                <th>Course</th>
+                <th>Year</th>
+                <th>Joined</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in recent_students %}
+            <tr>
+                <td>{{ student.student_id }}</td>
+                <td>{{ student.user.get_full_name }}</td>
+                <td>{{ student.get_course_display }}</td>
+                <td>{{ student.get_year_display }}</td>
+                <td>{{ student.user.date_joined|date:"M d, Y" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center">No recent students</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

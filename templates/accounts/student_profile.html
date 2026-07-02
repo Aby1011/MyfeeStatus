@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}Complete Student Profile - MyFeeStatus{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-form">
+        <h2 class="auth-title">
+            <i class="fas fa-user-graduate"></i> Complete Your Profile
+        </h2>
+        
+        <p class="text-center mb-3">Please provide your student information to complete your registration.</p>
+        
+        <form method="post" class="form">
+            {% csrf_token %}
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ form.student_id.id_for_label }}">Student ID:</label>
+                    {{ form.student_id }}
+                    {% if form.student_id.errors %}
+                        <div class="form-error">{{ form.student_id.errors|first }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.course.id_for_label }}">Course:</label>
+                    {{ form.course }}
+                    {% if form.course.errors %}
+                        <div class="form-error">{{ form.course.errors|first }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ form.year.id_for_label }}">Year:</label>
+                    {{ form.year }}
+                    {% if form.year.errors %}
+                        <div class="form-error">{{ form.year.errors|first }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.semester.id_for_label }}">Semester:</label>
+                    {{ form.semester }}
+                    {% if form.semester.errors %}
+                        <div class="form-error">{{ form.semester.errors|first }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.admission_date.id_for_label }}">Admission Date:</label>
+                {{ form.admission_date }}
+                {% if form.admission_date.errors %}
+                    <div class="form-error">{{ form.admission_date.errors|first }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ form.parent_name.id_for_label }}">Parent/Guardian Name:</label>
+                    {{ form.parent_name }}
+                    {% if form.parent_name.errors %}
+                        <div class="form-error">{{ form.parent_name.errors|first }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.parent_contact.id_for_label }}">Parent/Guardian Contact:</label>
+                    {{ form.parent_contact }}
+                    {% if form.parent_contact.errors %}
+                        <div class="form-error">{{ form.parent_contact.errors|first }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.address.id_for_label }}">Address:</label>
+                {{ form.address }}
+                {% if form.address.errors %}
+                    <div class="form-error">{{ form.address.errors|first }}</div>
+                {% endif %}
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-full">
+                <i class="fas fa-save"></i> Complete Profile
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

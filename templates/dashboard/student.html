@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Dashboard - MyFeeStatus{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1 class="dashboard-title">
+        <i class="fas fa-user-graduate"></i> Student Dashboard
+    </h1>
+    <p class="dashboard-subtitle">Welcome, {{ student.user.get_full_name }}! ({{ student.student_id }})</p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <i class="fas fa-money-bill stat-icon" style="color: #28a745;"></i>
+        <div class="stat-number">${{ paid_amount|floatformat:2 }}</div>
+        <div class="stat-label">Paid Amount</div>
+    </div>
+    
+    <div class="stat-card">
+        <i class="fas fa-clock stat-icon" style="color: #ffc107;"></i>
+        <div class="stat-number">${{ pending_amount|floatformat:2 }}</div>
+        <div class="stat-label">Pending Amount</div>
+    </div>
+    
+    <div class="stat-card">
+        <i class="fas fa-exclamation-triangle stat-icon" style="color: #dc3545;"></i>
+        <div class="stat-number">{{ overdue_fees.count }}</div>
+        <div class="stat-label">Overdue Fees</div>
+    </div>
+    
+    <div class="stat-card">
+        <i class="fas fa-check-circle stat-icon" style="color: #667eea;"></i>
+        <div class="stat-number">{{ paid_fees }}</div>
+        <div class="stat-label">Completed Fees</div>
+    </div>
+</div>
+
+{% if overdue_fees %}
+<div class="alert alert-warning">
+    <i class="fas fa-exclamation-triangle"></i>
+    You have {{ overdue_fees.count }} overdue fee(s). Please make payments as soon as possible to avoid additional charges.
+</div>
+{% endif %}
+
+<div class="d-flex gap-3 mb-4">
+    <a href="{% url 'fees:list' %}" class="btn btn-primary">
+        <i class="fas fa-list"></i> View All Fees
+    </a>
+    <a href="{% url 'payments:history' %}" class="btn btn-secondary">
+        <i class="fas fa-history"></i> Payment History
+    </a>
+</div>
+
+{% if upcoming_dues %}
+<div class="table-container">
+    <h3 style="padding: 1.5rem 1.5rem 0;">Upcoming Due Dates</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Fee Name</th>
+                <th>Amount</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for fee in upcoming_dues %}
+            <tr>
+                <td>{{ fee.fee_structure.name }}</td>
+                <td>${{ fee.remaining_amount|floatformat:2 }}</td>
+                <td>{{ fee.due_date|date:"M d, Y" }}</td>
+                <td><span class="status-badge status-{{ fee.status }}">{{ fee.get_status_display }}</span></td>
+                <td>
+                    <a href="{% url 'payments:make_payment' fee_id=fee.id %}" class="btn btn-sm btn-success">
+                        <i class="fas fa-credit-card"></i> Pay Now
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% if recent_payments %}
+<div class="table-container">
+    <h3 style="padding: 1.5rem 1.5rem 0;">Recent Payments</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Transaction ID</th>
+                <th>Fee Name</th>
+                <th>Amount</th>
+                <th>Payment Mode</th>
+                <th>Date</th>
+                <th>Receipt</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in recent_payments %}
+            <tr>
+                <td>{{ payment.transaction_id }}</td>
+                <td>{{ payment.student_fee.fee_structure.name }}</td>
+                <td>${{ payment.amount }}</td>
+                <td>{{ payment.get_payment_mode_display }}</td>
+                <td>{{ payment.processed_at|date:"M d, Y" }}</td>
+                <td>
+                    <a href="{% url 'payments:receipt' payment_id=payment.id %}" class="btn btn-sm btn-primary">
+                        <i class="fas fa-receipt"></i> View
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">No payments yet</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endblock %}

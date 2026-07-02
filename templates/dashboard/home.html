@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Welcome - MyFeeStatus{% endblock %}
+
+{% block content %}
+<div class="text-center">
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">
+            <i class="fas fa-graduation-cap"></i> Welcome to MyFeeStatus
+        </h1>
+        <p class="dashboard-subtitle">Your complete student fee management solution</p>
+    </div>
+    
+    {% if not user.is_authenticated %}
+    <div class="auth-container">
+        <div class="auth-form">
+            <h3><i class="fas fa-info-circle"></i> Get Started</h3>
+            <p>Please log in to access your dashboard and manage your fees.</p>
+            
+            <div class="d-flex gap-2">
+                <a href="{% url 'accounts:login' %}" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </a>
+                <a href="{% url 'accounts:register' %}" class="btn btn-secondary">
+                    <i class="fas fa-user-plus"></i> Register
+                </a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i>
+        You are logged in as {{ user.get_full_name|default:user.username }}. 
+        Click <a href="{% url 'dashboard:home' %}">here</a> to go to your dashboard.
+    </div>
+    {% endif %}
+    
+    <div class="stats-grid" style="margin-top: 3rem;">
+        <div class="stat-card">
+            <i class="fas fa-users stat-icon" style="color: #667eea;"></i>
+            <div class="stat-label">Multi-User System</div>
+            <p>Admin, Finance Manager & Student roles</p>
+        </div>
+        
+        <div class="stat-card">
+            <i class="fas fa-credit-card stat-icon" style="color: #28a745;"></i>
+            <div class="stat-label">Multiple Payment Modes</div>
+            <p>Credit/Debit Cards, UPI, Cash & Bank Transfer</p>
+        </div>
+        
+        <div class="stat-card">
+            <i class="fas fa-receipt stat-icon" style="color: #ffc107;"></i>
+            <div class="stat-label">Automated Receipts</div>
+            <p>Instant receipt generation for all payments</p>
+        </div>
+        
+        <div class="stat-card">
+            <i class="fas fa-mobile-alt stat-icon" style="color: #dc3545;"></i>
+            <div class="stat-label">Responsive Design</div>
+            <p>Works seamlessly on all devices</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

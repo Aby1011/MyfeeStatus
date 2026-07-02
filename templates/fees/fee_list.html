@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}Fee Management - MyFeeStatus{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1 class="dashboard-title">
+        <i class="fas fa-money-bill"></i> Fee Management
+    </h1>
+    <p class="dashboard-subtitle">
+        {% if user.is_student %}
+            Your fee records and payment status
+        {% else %}
+            Manage and monitor student fees
+        {% endif %}
+    </p>
+</div>
+
+{% if not user.is_student %}
+<div class="d-flex gap-3 mb-4">
+    <a href="{% url 'fees:structure_list' %}" class="btn btn-primary">
+        <i class="fas fa-cog"></i> Fee Structures
+    </a>
+    <a href="{% url 'fees:assign' %}" class="btn btn-success">
+        <i class="fas fa-plus"></i> Assign Fees
+    </a>
+    <a href="{% url 'fees:overdue' %}" class="btn btn-warning">
+        <i class="fas fa-clock"></i> Overdue Fees
+    </a>
+</div>
+{% endif %}
+
+<!-- Search Form -->
+<div class="form" style="margin-bottom: 2rem;">
+    <form method="get" class="d-flex gap-2 align-center">
+        {% if not user.is_student %}
+        <input type="text" name="student_id" placeholder="Student ID" value="{{ form.student_id.value|default:'' }}" style="width: 150px;">
+        {{ form.course }}
+        {{ form.year }}
+        {% endif %}
+        {{ form.status }}
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-search"></i> Search
+        </button>
+        <a href="{% url 'fees:list' %}" class="btn btn-secondary">
+            <i class="fas fa-times"></i> Clear
+        </a>
+    </form>
+</div>
+
+<div class="table-container">
+    <table class="table">
+        <thead>
+            <tr>
+                {% if not user.is_student %}
+                <th>Student ID</th>
+                <th>Student Name</th>
+                {% endif %}
+                <th>Fee Name</th>
+                <th>Course</th>
+                <th>Total Amount</th>
+                <th>Paid Amount</th>
+                <th>Remaining</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for fee in fees %}
+            <tr>
+                {% if not user.is_student %}
+                <td>{{ fee.student.student_id }}</td>
+                <td>{{ fee.student.user.get_full_name }}</td>
+                {% endif %}
+                <td>{{ fee.fee_structure.name }}</td>
+                <td>{{ fee.student.get_course_display }}</td>
+                <td>${{ fee.total_amount }}</td>
+                <td>${{ fee.amount_paid }}</td>
+                <td>${{ fee.remaining_amount }}</td>
+                <td>{{ fee.due_date|date:"M d, Y" }}</td>
+                <td><span class="status-badge status-{{ fee.status }}">{{ fee.get_status_display }}</span></td>
+                <td>
+                    {% if user.is_student and fee.status != 'paid' %}
+                        <a href="{% url 'payments:make_payment' fee_id=fee.id %}" class="btn btn-sm btn-success">
+                            <i class="fas fa-credit-card"></i> Pay
+                        </a>
+                    {% endif %}
+                    {% if not user.is_student %}
+                        <a href="{% url 'fees:student_detail' student_id=fee.student.id %}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-eye"></i> View
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="{% if user.is_student %}8{% else %}10{% endif %}" class="text-center">No fees found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

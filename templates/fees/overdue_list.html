@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}Overdue Fees - MyFeeStatus{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1 class="dashboard-title">
+        <i class="fas fa-exclamation-triangle"></i> Overdue Fees
+    </h1>
+    <p class="dashboard-subtitle">Fees that are past their due date</p>
+</div>
+
+<div class="d-flex gap-3 mb-4">
+    <a href="{% url 'fees:list' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Back to All Fees
+    </a>
+</div>
+
+<div class="table-container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Student ID</th>
+                <th>Student Name</th>
+                <th>Fee Name</th>
+                <th>Total Amount</th>
+                <th>Amount Paid</th>
+                <th>Remaining</th>
+                <th>Due Date</th>
+                <th>Days Overdue</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for fee in fees %}
+            <tr>
+                <td>{{ fee.student.student_id }}</td>
+                <td>{{ fee.student.user.get_full_name }}</td>
+                <td>{{ fee.fee_structure.name }}</td>
+                <td>${{ fee.total_amount }}</td>
+                <td>${{ fee.amount_paid }}</td>
+                <td>${{ fee.remaining_amount }}</td>
+                <td>{{ fee.due_date|date:"M d, Y" }}</td>
+                <td>
+                    <span class="text-danger">
+                        <strong>{{ fee.days_overdue }} days</strong>
+                    </span>
+                </td>
+                <td><span class="status-badge status-overdue">{{ fee.get_status_display }}</span></td>
+                <td>
+                    <a href="{% url 'fees:student_detail' student_id=fee.student.id %}" class="btn btn-sm btn-primary">
+                        <i class="fas fa-eye"></i> View
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="10" class="text-center">No overdue fees found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<style>
+.status-overdue {
+    background-color: #dc3545;
+    color: white;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}
+</style>
+{% endblock %}

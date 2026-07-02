@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment Receipt - MyFeeStatus{% endblock %}
+
+{% block content %}
+<div class="payment-container">
+    <div class="dashboard-header text-center">
+        <h1 class="dashboard-title">
+            <i class="fas fa-receipt"></i> Payment Receipt
+        </h1>
+        <p class="dashboard-subtitle">{{ receipt.receipt_number }}</p>
+    </div>
+    
+    <div class="payment-summary">
+        <div class="text-center mb-4">
+            <h2>MyFeeStatus</h2>
+            <p>Student Fee Management System</p>
+            <hr>
+        </div>
+        
+        <div class="d-flex justify-between mb-2">
+            <span><strong>Receipt Number:</strong></span>
+            <span>{{ receipt.receipt_number }}</span>
+        </div>
+        
+        <div class="d-flex justify-between mb-2">
+            <span><strong>Transaction ID:</strong></span>
+            <span>{{ payment.transaction_id }}</span>
+        </div>
+        
+        <div class="d-flex justify-between mb-2">
+            <span><strong>Date & Time:</strong></span>
+            <span>{{ payment.processed_at|date:"M d, Y H:i" }}</span>
+        </div>
+        
+        <hr>
+        
+        <div class="d-flex justify-between mb-2">
+            <span><strong>Student ID:</strong></span>
+            <span>{{ payment.student_fee.student.student_id }}</span>
+        </div>
+        
+        <div class="d-flex justify-between mb-2">
+            <span><strong>Student Name:</strong></span>
+            <span>{{ payment.student_fee.student.user.get_full_name }}</span>
+        </div>
+        
+        <div class="d-flex justify-between mb-2">
+            <span><strong>Course:</strong></span>
+            <span>{{ payment.student_fee.student.get_course_display }}</span>
+        </div>
+        
+        <div class="d-flex justify-between mb-2">
+            <span><strong>Year/Semester:</strong></span>
+            <span>{{ payment.student_fee.student.get_year_display }} - {{ payment.student_fee.student.get_semester_display }}</span>
+        </div>
+        
+        <hr>
+        
+        <div class="d-flex justify-between mb-2">
+            <span><strong>Fee Description:</strong></span>
+            <span>{{ payment.student_fee.fee_structure.name }}</span>
+        </div>
+        
+        <div class="d-flex justify-between mb-2">
+            <span><strong>Payment Mode:</strong></span>
+            <span>{{ payment.get_payment_mode_display }}</span>
+        </div>
+        
+        {% if payment.masked_card_number %}
+        <div class="d-flex justify-between mb-2">
+            <span><strong>Card Number:</strong></span>
+            <span>{{ payment.masked_card_number }}</span>
+        </div>
+        {% endif %}
+        
+        {% if payment.upi_id %}
+        <div class="d-flex justify-between mb-2">
+            <span><strong>UPI ID:</strong></span>
+            <span>{{ payment.upi_id }}</span>
+        </div>
+        {% endif %}
+        
+        {% if payment.reference_number %}
+        <div class="d-flex justify-between mb-2">
+            <span><strong>Reference Number:</strong></span>
+            <span>{{ payment.reference_number }}</span>
+        </div>
+        {% endif %}
+        
+        <hr>
+        
+        <div class="d-flex justify-between mb-2" style="font-size: 1.2rem;">
+            <span><strong>Amount Paid:</strong></span>
+            <span><strong>${{ payment.amount }}</strong></span>
+        </div>
+        
+        <div class="d-flex justify-between mb-2">
+            <span><strong>Status:</strong></span>
+            <span class="status-badge status-{{ payment.status }}">{{ payment.get_status_display }}</span>
+        </div>
+        
+        {% if payment.notes %}
+        <hr>
+        <div class="mb-2">
+            <strong>Notes:</strong><br>
+            {{ payment.notes }}
+        </div>
+        {% endif %}
+        
+        <hr>
+        
+        <div class="text-center">
+            <p><em>This is a computer-generated receipt and does not require a signature.</em></p>
+            <p><em>For any queries, please contact the finance office.</em></p>
+        </div>
+    </div>
+    
+    <div class="d-flex gap-2 mt-4">
+        <button onclick="window.print()" class="btn btn-primary">
+            <i class="fas fa-print"></i> Print Receipt
+        </button>
+        <a href="{% url 'payments:history' %}" class="btn btn-secondary">
+            <i class="fas fa-history"></i> Payment History
+        </a>
+        <a href="{% url 'dashboard:home' %}" class="btn btn-success">
+            <i class="fas fa-home"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<style>
+@media print {
+    .navbar, .footer, .btn, .d-flex.gap-2.mt-4 {
+        display: none !important;
+    }
+    
+    .payment-container {
+        max-width: 100% !important;
+        margin: 0 !important;
+    }
+    
+    .payment-summary {
+        box-shadow: none !important;
+        border: 1px solid #333;
+    }
+}
+</style>
+{% endblock %}
