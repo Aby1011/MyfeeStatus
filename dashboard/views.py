@@ -6,6 +6,10 @@ from accounts.models import CustomUser, Student
 from fees.models import StudentFee, FeeStructure
 from payments.models import Payment
 
+def landing_page(request):
+    """Render the public landing/home page"""
+    return render(request, 'landing.html')
+
 @login_required
 def dashboard_home(request):
     """Route users to appropriate dashboard based on user type"""

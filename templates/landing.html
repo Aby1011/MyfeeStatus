@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}MyFeeStatus - Modern Student Fee Management{% endblock %}
+
+{% block body_class %}landing-body{% endblock %}
+
+{% block content_wrapper %}
+<!-- Inject custom CSS for the landing page -->
+<link rel="stylesheet" href="{% static 'css/landing.css' %}">
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-overlay"></div>
+    <div class="hero-container">
+        <div class="hero-text-block">
+            <h1 class="hero-main-text">
+                <span class="highlight-brand">MyFeeStatus</span> makes school fees <span class="highlight-action">effortless</span>—collect payments, track balances, and verify instantly with a <span class="highlight-feature">smart, role‑based ledger</span> for students, admins, and finance teams.
+            </h1>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="stats-container">
+        <div class="stat-item">
+            <div class="stat-val">3+</div>
+            <div class="stat-name">User Portals</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-val">5+</div>
+            <div class="stat-name">Payment Modes</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-val">100%</div>
+            <div class="stat-name">Instant Receipts</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-val">Real-time</div>
+            <div class="stat-name">Fee Tracking</div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="section-header">
+        <span class="section-tag">Core Capabilities</span>
+        <h2 class="section-title">Designed for Seamless Operations</h2>
+        <p class="section-subtitle">Everything you need to handle academic finances without the paperwork clutter.</p>
+    </div>
+    
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon-wrapper">
+                <i class="fas fa-users-cog"></i>
+            </div>
+            <h3 class="feature-title">Role-Based Access</h3>
+            <p class="feature-description">
+                Tailored interfaces for Admins, Finance Managers, and Students. Each user logs into a specialized workspace with relevant actions.
+            </p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon-wrapper">
+                <i class="fas fa-credit-card"></i>
+            </div>
+            <h3 class="feature-title">Simulated Payments</h3>
+            <p class="feature-description">
+                Supports UPI, Credit Cards, Debit Cards, Cash, and Bank Transfers. Securely test fee clearance flows with real-time UI validation.
+            </p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon-wrapper">
+                <i class="fas fa-file-invoice-dollar"></i>
+            </div>
+            <h3 class="feature-title">Automated Receipts</h3>
+            <p class="feature-description">
+                Generates verifiable receipts instantly upon payment completion. View and print details from student transaction ledgers.
+            </p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon-wrapper">
+                <i class="fas fa-bell"></i>
+            </div>
+            <h3 class="feature-title">Overdue Alerts</h3>
+            <p class="feature-description">
+                Auto-flags unpaid student structures past their deadlines. Protect institution revenue streams with clear payment status logs.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- About / Deep Dive Section -->
+<section class="about-section">
+    <div class="about-container">
+        <div class="about-content">
+            <span class="section-tag">About The Project</span>
+            <h2 class="section-title">A Secure, Robust Architecture</h2>
+            <p class="about-text">
+                MyFeeStatus is built on the Django framework, combining powerful ORM models with dynamic front-end micro-interactions. The application structures students, academic structures, and transactions cleanly, ensuring high reliability.
+            </p>
+            <ul class="about-list">
+                <li class="about-list-item">
+                    <i class="fas fa-check-circle about-list-icon"></i>
+                    <span><strong>Extensible Models:</strong> Customize tuition, exam, and lab structures per course or semester.</span>
+                </li>
+                <li class="about-list-item">
+                    <i class="fas fa-check-circle about-list-icon"></i>
+                    <span><strong>Robust Validations:</strong> Prevent payment mismatches or double ledger postings automatically.</span>
+                </li>
+                <li class="about-list-item">
+                    <i class="fas fa-check-circle about-list-icon"></i>
+                    <span><strong>Secure Sessions:</strong> Django's built-in session storage and authentication safeguards account privacy.</span>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="about-visual">
+            <div class="visual-backdrop"></div>
+            <div class="visual-card">
+                <h3 class="visual-card-title">
+                    <i class="fas fa-chart-line" style="color: #6366f1;"></i> Collection Rate Metrics
+                </h3>
+                <div class="visual-metric">
+                    <span class="metric-label">Collection Target</span>
+                    <span class="metric-value">92% Met</span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" style="width: 92%;"></div>
+                </div>
+                
+                <div class="visual-metric" style="margin-top: 1.5rem;">
+                    <span class="metric-label">Processed Payments</span>
+                    <span class="metric-value">1,482 cleared</span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" style="width: 80%; background: linear-gradient(90deg, #a78bfa, #f472b6);"></div>
+                </div>
+
+                <div class="visual-metric" style="margin-top: 1.5rem;">
+                    <span class="metric-label">Active Enrolled Students</span>
+                    <span class="metric-value">98% Verified</span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" style="width: 98%; background: linear-gradient(90deg, #34d399, #60a5fa);"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Banner -->
+<section class="cta-banner">
+    <div class="cta-banner-container">
+        <h2 class="cta-title">Streamline Your Academic Finance Today</h2>
+        <p class="cta-description">
+            Sign up now to explore student portfolios, assign fees, and view detailed audit trails in a unified workspace.
+        </p>
+        <div class="cta-buttons">
+            {% if user.is_authenticated %}
+                <a href="{% url 'dashboard:home' %}" class="btn-landing-primary">
+                    <i class="fas fa-arrow-right"></i> Navigate to Workspace
+                </a>
+            {% else %}
+                <a href="{% url 'accounts:login' %}" class="btn-landing-primary">
+                    <i class="fas fa-sign-in-alt"></i> Access the Dashboard
+                </a>
+                <a href="{% url 'accounts:register' %}" class="btn-landing-secondary" style="margin-left: 1rem;">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

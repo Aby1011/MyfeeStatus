@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile Settings - MyFeeStatus{% endblock %}
+
+{% block content %}
+<div class="auth-container" style="min-height: auto; padding: 2rem 0;">
+    <div class="auth-form" style="max-width: 700px;">
+        <h2 class="auth-title">
+            <i class="fas fa-user-edit"></i> Profile Settings
+        </h2>
+        
+        <form method="post" class="form">
+            {% csrf_token %}
+            
+            <h3 style="margin-bottom: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 0.5rem; color: #555;">
+                <i class="fas fa-id-card"></i> User Information
+            </h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ user_form.first_name.id_for_label }}">First Name:</label>
+                    {{ user_form.first_name }}
+                    {% if user_form.first_name.errors %}
+                        <div class="form-error">{{ user_form.first_name.errors|first }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ user_form.last_name.id_for_label }}">Last Name:</label>
+                    {{ user_form.last_name }}
+                    {% if user_form.last_name.errors %}
+                        <div class="form-error">{{ user_form.last_name.errors|first }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ user_form.email.id_for_label }}">Email Address:</label>
+                    {{ user_form.email }}
+                    {% if user_form.email.errors %}
+                        <div class="form-error">{{ user_form.email.errors|first }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ user_form.phone_number.id_for_label }}">Phone Number:</label>
+                    {{ user_form.phone_number }}
+                    {% if user_form.phone_number.errors %}
+                        <div class="form-error">{{ user_form.phone_number.errors|first }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            {% if student_form %}
+                <h3 style="margin: 2rem 0 1.5rem 0; border-bottom: 2px solid #eee; padding-bottom: 0.5rem; color: #555;">
+                    <i class="fas fa-graduation-cap"></i> Student Information
+                </h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ student_form.course.id_for_label }}">Course:</label>
+                        {{ student_form.course }}
+                        {% if student_form.course.errors %}
+                            <div class="form-error">{{ student_form.course.errors|first }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ student_form.year.id_for_label }}">Year:</label>
+                        {{ student_form.year }}
+                        {% if student_form.year.errors %}
+                            <div class="form-error">{{ student_form.year.errors|first }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ student_form.semester.id_for_label }}">Semester:</label>
+                        {{ student_form.semester }}
+                        {% if student_form.semester.errors %}
+                            <div class="form-error">{{ student_form.semester.errors|first }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ student_form.parent_name.id_for_label }}">Parent/Guardian Name:</label>
+                        {{ student_form.parent_name }}
+                        {% if student_form.parent_name.errors %}
+                            <div class="form-error">{{ student_form.parent_name.errors|first }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ student_form.parent_contact.id_for_label }}">Parent/Guardian Contact:</label>
+                    {{ student_form.parent_contact }}
+                    {% if student_form.parent_contact.errors %}
+                        <div class="form-error">{{ student_form.parent_contact.errors|first }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ student_form.address.id_for_label }}">Address:</label>
+                    {{ student_form.address }}
+                    {% if student_form.address.errors %}
+                        <div class="form-error">{{ student_form.address.errors|first }}</div>
+                    {% endif %}
+                </div>
+            {% endif %}
+            
+            <div class="d-flex gap-2" style="margin-top: 2rem;">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+                <a href="{% url 'dashboard:home' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    /* Styling extension to match base forms */
+    .d-flex {
+        display: flex;
+    }
+    .gap-2 {
+        gap: 0.5rem;
+    }
+    .gap-3 {
+        gap: 1rem;
+    }
+</style>
+{% endblock %}

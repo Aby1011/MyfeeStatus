@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}Fee Reminders - MyFeeStatus{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1 class="dashboard-title">
+        <i class="fas fa-bell"></i> Fee Reminders
+    </h1>
+    <p class="dashboard-subtitle">History of dispatched notifications regarding outstanding student balances</p>
+</div>
+
+<div class="d-flex gap-3 mb-4" style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+    <a href="{% url 'dashboard:home' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+    <a href="{% url 'fees:create_reminder' %}" class="btn btn-primary">
+        <i class="fas fa-paper-plane"></i> Send New Reminder
+    </a>
+</div>
+
+<div class="table-container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Student ID</th>
+                <th>Student Name</th>
+                <th>Fee Invoice</th>
+                <th>Remaining Balance</th>
+                <th>Scheduled Date</th>
+                <th>Message Content</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reminder in reminders %}
+            <tr>
+                <td><strong>{{ reminder.student_fee.student.student_id }}</strong></td>
+                <td>{{ reminder.student_fee.student.user.get_full_name }}</td>
+                <td>{{ reminder.student_fee.fee_structure.name }}</td>
+                <td style="color: #dc3545; font-weight: 600;">${{ reminder.student_fee.remaining_amount }}</td>
+                <td>{{ reminder.reminder_date|date:"M d, Y H:i" }}</td>
+                <td><span class="message-text" title="{{ reminder.message }}">{{ reminder.message|truncatechars:50 }}</span></td>
+                <td>
+                    {% if reminder.is_sent %}
+                        <span class="status-badge status-paid">Sent</span>
+                    {% else %}
+                        <span class="status-badge status-pending">Pending</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center" style="padding: 2rem;">No fee reminders have been created yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-block;
+    }
+    .status-paid {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+    .status-pending {
+        background-color: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeaa7;
+    }
+    .message-text {
+        color: #555;
+        cursor: help;
+    }
+    .text-center {
+        text-align: center;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Draft Fee Reminder - MyFeeStatus{% endblock %}
+
+{% block content %}
+<div class="auth-container" style="min-height: auto; padding: 2rem 0;">
+    <div class="auth-form" style="max-width: 600px;">
+        <h2 class="auth-title">
+            <i class="fas fa-paper-plane"></i> Draft Fee Reminder
+        </h2>
+        
+        <p class="text-center mb-3">Compose and schedule an outstanding balance alert to send to a student.</p>
+        
+        <form method="post" class="form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="{{ form.student_fee.id_for_label }}">Select Student Invoice:</label>
+                {{ form.student_fee }}
+                {% if form.student_fee.errors %}
+                    <div class="form-error">{{ form.student_fee.errors|first }}</div>
+                {% endif %}
+                <small class="form-text text-muted" style="display: block; margin-top: 0.25rem; color: #666; font-size: 0.85rem;">
+                    Choose the student and their corresponding outstanding fee structure.
+                </small>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.reminder_date.id_for_label }}">Scheduled Send Time:</label>
+                {{ form.reminder_date }}
+                {% if form.reminder_date.errors %}
+                    <div class="form-error">{{ form.reminder_date.errors|first }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.message.id_for_label }}">Reminder Message:</label>
+                {{ form.message }}
+                {% if form.message.errors %}
+                    <div class="form-error">{{ form.message.errors|first }}</div>
+                {% endif %}
+                <small class="form-text text-muted" style="display: block; margin-top: 0.25rem; color: #666; font-size: 0.85rem;">
+                    Write a message notification text (e.g., details about payment deadlines, overdue fines).
+                </small>
+            </div>
+            
+            <div class="d-flex gap-2" style="display: flex; gap: 0.5rem; margin-top: 2rem;">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-paper-plane"></i> Schedule Reminder
+                </button>
+                <a href="{% url 'fees:reminder_list' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
